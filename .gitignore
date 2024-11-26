@@ -1,0 +1,15 @@
+.env
+.DS_Store
+__pycache__
+scripts/credentials.json
+scripts/token.json
+/.quarto/
+_extensions/*
+
+*.py
+
+scripts/*
+app_prompt*
+denied.md*
+requirements.txt*
+scripts.js

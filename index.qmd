@@ -1,0 +1,343 @@
+---
+title: "R-shinylive app in Quarto!"
+code-fold: true
+format:
+  html:
+    css: style.css
+    grid: 
+      body-width: 1300px
+    # resources: 
+    #   - shinylive-sw.js
+filters:
+  - shinylive
+---
+
+
+
+
+
+```{r}
+#| eval: false
+##| standalone: true
+##| viewerHeight: 100
+
+# ```{shinylive-r}
+
+library(shiny)
+library(bslib)
+
+ui <- page_sidebar(
+  sidebar = sidebar(
+    sliderInput("mySlider", 
+                "Select a Value", 
+                min = 0, 
+                max = 100, 
+                value = 50)
+  ),
+  card(
+    card_header("Slider Value"),
+    textOutput("sliderValue")
+  )
+)
+
+server <- function(input, output, session) {
+  output$sliderValue <- renderText({
+    paste("Current Slider Value:", input$mySlider)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+
+
+# Action Plan Creation Task- Davis Family Electricity Reduction
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 650
+library(shiny)
+library(bslib)
+
+ui <- page_fluid(
+  theme = bs_theme(version = 5, bootswatch = "flatly"),
+  tags$head(
+    tags$style(HTML("
+      .table-bordered {
+        border: 1px solid #dee2e6;
+      }
+      .table-bordered th, 
+      .table-bordered td {
+        border: 1px solid #dee2e6;
+        text-align: center;
+        vertical-align: middle;
+      }
+      .irs-bar,
+      .irs-bar-edge,
+      .irs-single,
+      .irs-grid-pol {
+        background: black;
+        border-color: black;
+      }
+      .irs-from, .irs-to, .irs-single {
+        background: black;
+        color: white;
+      }
+    "))
+  ),
+  
+  h2("Action Plan Creation - Davis Family Electricity Reduction"),
+  
+  fluidRow(
+    column(12,
+      tags$table(class = "table table-bordered",
+        tags$thead(
+          tags$tr(
+            tags$th("Category"),
+            tags$th("Last Year (Davis Family)"),
+            tags$th("Massachusetts Average"),
+            tags$th("Action Plan 1"),
+            tags$th("Action Plan 2")
+          )
+        ),
+        tags$tbody(
+          # Cooling
+          tags$tr(
+            tags$td("Cooling (Central A/C)"),
+            tags$td("419"),
+            tags$td("322"),
+            tags$td(
+              sliderInput("cooling_plan1", NULL, 
+                          min = 0, max = 419, 
+                          value = 419, step = 1)
+            ),
+            tags$td(
+              sliderInput("cooling_plan2", NULL, 
+                          min = 0, max = 419, 
+                          value = 419, step = 1)
+            )
+          ),
+          # Heating
+          tags$tr(
+            tags$td("Heating the Home"),
+            tags$td("26,751"),
+            tags$td("19,108"),
+            tags$td(
+              sliderInput("heating_plan1", NULL, 
+                          min = 0, max = 26751, 
+                          value = 26751, step = 1)
+            ),
+            tags$td(
+              sliderInput("heating_plan2", NULL, 
+                          min = 0, max = 26751, 
+                          value = 26751, step = 1)
+            )
+          ),
+          # Water Heating
+          tags$tr(
+            tags$td("Water Heating"),
+            tags$td("10,543"),
+            tags$td("5,070"),
+            tags$td(
+              sliderInput("water_plan1", NULL, 
+                          min = 0, max = 10543, 
+                          value = 10543, step = 1)
+            ),
+            tags$td(
+              sliderInput("water_plan2", NULL, 
+                          min = 0, max = 10543, 
+                          value = 10543, step = 1)
+            )
+          ),
+          # Refrigerator
+          tags$tr(
+            tags$td("Refrigerator"),
+            tags$td("1,230"),
+            tags$td("1,025"),
+            tags$td(
+              sliderInput("fridge_plan1", NULL, 
+                          min = 0, max = 1230, 
+                          value = 1230, step = 1)
+            ),
+            tags$td(
+              sliderInput("fridge_plan2", NULL, 
+                          min = 0, max = 1230, 
+                          value = 1230, step = 1)
+            )
+          ),
+          # Other
+          tags$tr(
+            tags$td("Other (TV, Lighting, Electronics, etc.)"),
+            tags$td("7,350"),
+            tags$td("6,682"),
+            tags$td(
+              sliderInput("other_plan1", NULL, 
+                          min = 0, max = 7350, 
+                          value = 7350, step = 1)
+            ),
+            tags$td(
+              sliderInput("other_plan2", NULL, 
+                          min = 0, max = 7350, 
+                          value = 7350, step = 1)
+            )
+          ),
+          # Total Row
+          tags$tr(
+            tags$td(strong("Total kWh")),
+            tags$td("46,293"),
+            tags$td("32,207"),
+            tags$td(strong(textOutput("total_plan1"))),
+            tags$td(strong(textOutput("total_plan2")))
+          )
+        )
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Calculate totals for each plan
+  output$total_plan1 <- renderText({
+    total <- input$cooling_plan1 + 
+             input$heating_plan1 + 
+             input$water_plan1 + 
+             input$fridge_plan1 + 
+             input$other_plan1
+    format(total, big.mark = ",")
+  })
+  
+  output$total_plan2 <- renderText({
+    total <- input$cooling_plan2 + 
+             input$heating_plan2 + 
+             input$water_plan2 + 
+             input$fridge_plan2 + 
+             input$other_plan2
+    format(total, big.mark = ",")
+  })
+}
+
+shinyApp(ui, server)
+
+
+```
+
+
+
+
+# action plan - alternative
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 700
+library(shiny)
+library(bslib)
+library(DT)
+library(purrr)
+
+# Initial data
+categories <- c(
+  "Cooling (Central A/C)",
+  "Heating the Home",
+  "Water Heating",
+  "Refrigerator",
+  "Other (Television, Lighting, Electronics, Washer/Dryer, etc.)"
+)
+
+current_usage <- c(419, 26751, 10543, 1230, 7350)
+average_usage <- c(322, 19108, 5070, 1025, 6682)
+
+ui <- page_sidebar(
+  title = "Electricity Usage Action Plan Creator",
+  sidebar = sidebar(
+    title = "Action Plan Controls",
+    accordion(
+      accordion_panel(
+        "Action Plan 1",
+        map(seq_along(categories), ~{
+          sliderInput(
+            inputId = paste0("plan1_", .x),
+            label = categories[.x],
+            min = average_usage[.x] * 0.5,
+            max = current_usage[.x] * 1.2,
+            value = current_usage[.x],
+            step = 1,
+            width = "100%"
+          )
+        })
+      ),
+      accordion_panel(
+        "Action Plan 2",
+        map(seq_along(categories), ~{
+          sliderInput(
+            inputId = paste0("plan2_", .x),
+            label = categories[.x],
+            min = average_usage[.x] * 0.5,
+            max = current_usage[.x] * 1.2,
+            value = current_usage[.x],
+            step = 1,
+            width = "100%"
+          )
+        })
+      )
+    )
+  ),
+  
+  card(
+    card_header("Massachusetts Family Electricity Usage Plans"),
+    card_body(
+      DTOutput("comparison_table"),
+      hr(),
+      h4("Summary"),
+      textOutput("summary_text")
+    )
+  )
+)
+
+server <- function(input, output) {
+  # Reactive values for plan totals
+  plan1_total <- reactive({
+    sum(sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]]))
+  })
+  
+  plan2_total <- reactive({
+    sum(sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]]))
+  })
+  
+  # Create comparison table
+  output$comparison_table <- renderDT({
+    plan1_values <- sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]])
+    plan2_values <- sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]])
+    
+    data.frame(
+      Category = c(categories, "Total kWh"),
+      `Current Usage (kWh)` = c(current_usage, sum(current_usage)),
+      `Average Usage (kWh)` = c(average_usage, sum(average_usage)),
+      `Action Plan 1` = c(plan1_values, plan1_total()),
+      `Action Plan 2` = c(plan2_values, plan2_total())
+    ) |>
+      datatable(
+        options = list(
+          dom = 't',
+          ordering = FALSE
+        ),
+        rownames = FALSE
+      )
+  })
+  
+  # Create summary text
+  output$summary_text <- renderText({
+    current_cost <- sum(current_usage) * 0.15  # Assuming $0.15 per kWh
+    plan1_cost <- plan1_total() * 0.15
+    plan2_cost <- plan2_total() * 0.15
+    
+    sprintf(
+      "Current annual cost: $%.2f\nPlan 1 annual cost: $%.2f (savings: $%.2f)\nPlan 2 annual cost: $%.2f (savings: $%.2f)",
+      current_cost,
+      plan1_cost,
+      current_cost - plan1_cost,
+      plan2_cost,
+      current_cost - plan2_cost
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
