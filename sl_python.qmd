@@ -1,0 +1,339 @@
+---
+title: "Python-shinylive app in Quarto!"
+code-fold: true
+format:
+  html:
+    css: style.css
+    grid:
+      body-width: 1100px
+filters:
+  - shinylive
+---
+
+
+
+# Python Version 
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 700
+
+from shiny import App, ui, render
+from pathlib import Path
+
+app_ui = ui.page_fluid(
+    ui.head_content(
+        ui.tags.style("""
+            .table-bordered {
+                border: 1px solid #dee2e6;
+            }
+            .table-bordered th, 
+            .table-bordered td {
+                border: 1px solid #dee2e6;
+                text-align: center;
+                vertical-align: middle;
+            }
+        """)
+    ),
+    ui.h2("Action Plan Creation - Davis Family Electricity Reduction"),
+    ui.row(
+        ui.column(12,
+            ui.tags.table(
+                {"class": "table table-bordered"},
+                ui.tags.thead(
+                    ui.tags.tr(
+                        ui.tags.th("Category"),
+                        ui.tags.th("Last Year (Davis Family)"),
+                        ui.tags.th("Massachusetts Average"),
+                        ui.tags.th("Action Plan 1"),
+                        ui.tags.th("Action Plan 2")
+                    )
+                ),
+                ui.tags.tbody(
+                    # Cooling row
+                    ui.tags.tr(
+                        ui.tags.td("Cooling (Central A/C)"),
+                        ui.tags.td("419"),
+                        ui.tags.td("322"),
+                        ui.tags.td(
+                            ui.input_slider("cooling_plan1", None, 
+                                          min=0, max=419, 
+                                          value=419, step=1)
+                        ),
+                        ui.tags.td(
+                            ui.input_slider("cooling_plan2", None, 
+                                          min=0, max=419, 
+                                          value=419, step=1)
+                        )
+                    ),
+                    # Heating row
+                    ui.tags.tr(
+                        ui.tags.td("Heating the Home"),
+                        ui.tags.td("26,751"),
+                        ui.tags.td("19,108"),
+                        ui.tags.td(
+                            ui.input_slider("heating_plan1", None, 
+                                          min=0, max=26751, 
+                                          value=26751, step=1)
+                        ),
+                        ui.tags.td(
+                            ui.input_slider("heating_plan2", None, 
+                                          min=0, max=26751, 
+                                          value=26751, step=1)
+                        )
+                    ),
+                    # Water Heating row
+                    ui.tags.tr(
+                        ui.tags.td("Water Heating"),
+                        ui.tags.td("10,543"),
+                        ui.tags.td("5,070"),
+                        ui.tags.td(
+                            ui.input_slider("water_plan1", None, 
+                                          min=0, max=10543, 
+                                          value=10543, step=1)
+                        ),
+                        ui.tags.td(
+                            ui.input_slider("water_plan2", None, 
+                                          min=0, max=10543, 
+                                          value=10543, step=1)
+                        )
+                    ),
+                    # Refrigerator row
+                    ui.tags.tr(
+                        ui.tags.td("Refrigerator"),
+                        ui.tags.td("1,230"),
+                        ui.tags.td("1,025"),
+                        ui.tags.td(
+                            ui.input_slider("fridge_plan1", None, 
+                                          min=0, max=1230, 
+                                          value=1230, step=1)
+                        ),
+                        ui.tags.td(
+                            ui.input_slider("fridge_plan2", None, 
+                                          min=0, max=1230, 
+                                          value=1230, step=1)
+                        )
+                    ),
+                    # Other row
+                    ui.tags.tr(
+                        ui.tags.td("Other (TV, Lighting, Electronics, etc.)"),
+                        ui.tags.td("7,350"),
+                        ui.tags.td("6,682"),
+                        ui.tags.td(
+                            ui.input_slider("other_plan1", None, 
+                                          min=0, max=7350, 
+                                          value=7350, step=1)
+                        ),
+                        ui.tags.td(
+                            ui.input_slider("other_plan2", None, 
+                                          min=0, max=7350, 
+                                          value=7350, step=1)
+                        )
+                    ),
+                    # Total row
+                    ui.tags.tr(
+                        ui.tags.td(ui.tags.strong("Total kWh")),
+                        ui.tags.td("46,293"),
+                        ui.tags.td("32,207"),
+                        ui.tags.td(ui.tags.strong(ui.output_text("total_plan1"))),
+                        ui.tags.td(ui.tags.strong(ui.output_text("total_plan2")))
+                    )
+                )
+            )
+        )
+    )
+)
+
+def server(input, output, session):
+    @output
+    @render.text
+    def total_plan1():
+        total = (input.cooling_plan1() + 
+                input.heating_plan1() + 
+                input.water_plan1() + 
+                input.fridge_plan1() + 
+                input.other_plan1())
+        return f"{total:,}"
+    
+    @output
+    @render.text
+    def total_plan2():
+        total = (input.cooling_plan2() + 
+                input.heating_plan2() + 
+                input.water_plan2() + 
+                input.fridge_plan2() + 
+                input.other_plan2())
+        return f"{total:,}"
+
+app = App(app_ui, server)
+```
+
+
+
+
+# shinylive
+
+```{shinylive-python}
+#| standalone: true
+from shiny import *
+import sys
+
+app_ui = ui.page_fluid(
+    ui.output_text_verbatim("txt"),
+)
+
+def server(input, output, session):
+    @output
+    @render.text
+    def txt():
+        return f"Python version: {sys.version}"
+
+app = App(app_ui, server)
+
+```
+
+
+# python 
+```{python}
+#| eval: false
+#| include: false
+import sys
+from shiny import App, ui, render, reactive
+import openai
+# print python path and version with shinylive chunk
+
+print(sys.executable)
+print(sys.version)
+
+```
+
+
+
+
+
+
+```{python}
+#| eval: false
+#| include: false
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+import sys
+print(sys.executable)
+print(sys.version)
+
+
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY")
+# Create OpenAI API client
+openai_client = OpenAI(api_key=api_key)
+
+print(openai_client)
+
+```
+
+
+
+
+
+
+
+```{python}
+#| eval: false
+#| include: false
+
+from shiny import App, ui, render, reactive
+import sys
+import os
+
+async def setup():
+    import micropip
+    await micropip.install('openai', keep_going=True)
+    await micropip.install('dotenv', keep_going=True)
+    from openai import OpenAI
+    api_key = os.getenv("OPENAI_API_KEY")
+    # Create OpenAI API client
+    openai_client = OpenAI(api_key=api_key)
+    print(openai_client)
+
+
+
+
+
+
+
+app_ui = ui.page_fluid(
+    ui.h2("Python Path and Version"),
+    ui.row(
+        ui.column(12,
+            ui.tags.table(
+                {"class": "table table-bordered"},
+                ui.tags.thead(
+                    ui.tags.tr(
+                        ui.tags.th("Python Path"),
+                        ui.tags.th("Python Version"), 
+                    )
+                ),
+                ui.tags.tbody(
+                    ui.tags.tr(
+                        ui.tags.td(sys.executable),
+                        ui.tags.td(sys.version)
+                    )
+                )
+            )
+        )
+    )
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
+
+
+```
+
+
+
+
+
+
+# Misc
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 500
+
+from shiny import App, render, ui
+import numpy as np
+import matplotlib.pyplot as plt
+
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider("period", "Period", 0.5, 4, 1, step=0.5),
+            ui.input_slider("amplitude", "Amplitude", 0, 2, 1, step=0.25),
+            ui.input_slider("shift", "Phase shift", 0, 2, 0, step=0.1),
+        ),
+        ui.output_plot("plot"),
+    ),
+)
+
+
+def server(input, output, session):
+    @output
+    @render.plot(alt="Sine wave")
+    def plot():
+        t = np.arange(0.0, 4.0, 0.01)
+        s = input.amplitude() * np.sin(
+            2 * np.pi / input.period() * (t - input.shift() / 2)
+        )
+        fig, ax = plt.subplots()
+        ax.set_ylim([-2, 2])
+        ax.plot(t, s)
+        ax.grid()
+
+
+app = App(app_ui, server)
+
+```

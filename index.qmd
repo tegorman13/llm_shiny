@@ -13,45 +13,8 @@ filters:
 ---
 
 
-
-
-
-```{r}
-#| eval: false
-##| standalone: true
-##| viewerHeight: 100
-
-# ```{shinylive-r}
-
-library(shiny)
-library(bslib)
-
-ui <- page_sidebar(
-  sidebar = sidebar(
-    sliderInput("mySlider", 
-                "Select a Value", 
-                min = 0, 
-                max = 100, 
-                value = 50)
-  ),
-  card(
-    card_header("Slider Value"),
-    textOutput("sliderValue")
-  )
-)
-
-server <- function(input, output, session) {
-  output$sliderValue <- renderText({
-    paste("Current Slider Value:", input$mySlider)
-  })
-}
-
-shinyApp(ui, server)
-```
-
-
-
 # Action Plan Creation Task- Davis Family Electricity Reduction
+
 ```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 650
@@ -232,7 +195,22 @@ library(bslib)
 library(DT)
 library(purrr)
 
-# Initial data
+# Data for both families
+family_data <- list(
+  "Massachusetts" = list(
+    current_usage = c(419, 26751, 10543, 1230, 7350),
+    average_usage = c(322, 19108, 5070, 1025, 6682),
+    reduction_target = 1042,  # in dollars
+    target_type = "USD"
+  ),
+  "Colorado" = list(
+    current_usage = c(697, 18052, 11667, 1370, 7882),
+    average_usage = c(498, 16411, 5832, 1142, 6652),
+    reduction_target = 5965,  # in kWh
+    target_type = "kWh"
+  )
+)
+
 categories <- c(
   "Cooling (Central A/C)",
   "Heating the Home",
@@ -241,47 +219,33 @@ categories <- c(
   "Other (Television, Lighting, Electronics, Washer/Dryer, etc.)"
 )
 
-current_usage <- c(419, 26751, 10543, 1230, 7350)
-average_usage <- c(322, 19108, 5070, 1025, 6682)
-
 ui <- page_sidebar(
   title = "Electricity Usage Action Plan Creator",
   sidebar = sidebar(
     title = "Action Plan Controls",
+    selectInput(
+      "family",
+      "Select Family",
+      choices = c("Massachusetts", "Colorado")
+    ),
+    textOutput("target_text"),
+    br(),
     accordion(
       accordion_panel(
         "Action Plan 1",
-        map(seq_along(categories), ~{
-          sliderInput(
-            inputId = paste0("plan1_", .x),
-            label = categories[.x],
-            min = average_usage[.x] * 0.5,
-            max = current_usage[.x] * 1.2,
-            value = current_usage[.x],
-            step = 1,
-            width = "100%"
-          )
-        })
+        uiOutput("plan1_sliders")
       ),
       accordion_panel(
         "Action Plan 2",
-        map(seq_along(categories), ~{
-          sliderInput(
-            inputId = paste0("plan2_", .x),
-            label = categories[.x],
-            min = average_usage[.x] * 0.5,
-            max = current_usage[.x] * 1.2,
-            value = current_usage[.x],
-            step = 1,
-            width = "100%"
-          )
-        })
+        uiOutput("plan2_sliders")
       )
     )
   ),
   
   card(
-    card_header("Massachusetts Family Electricity Usage Plans"),
+    card_header(
+      textOutput("family_header")
+    ),
     card_body(
       DTOutput("comparison_table"),
       hr(),
@@ -291,20 +255,95 @@ ui <- page_sidebar(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  
+  # Dynamic slider UI for Plan 1
+  output$plan1_sliders <- renderUI({
+    current <- family_data[[input$family]]$current_usage
+    average <- family_data[[input$family]]$average_usage
+    
+    map(seq_along(categories), ~{
+      sliderInput(
+        inputId = paste0("plan1_", .x),
+        label = categories[.x],
+        min = average[.x] * 0.5,
+        max = current[.x] * 1.2,
+        value = current[.x],
+        step = 1,
+        width = "100%"
+      )
+    })
+  })
+  
+  # Dynamic slider UI for Plan 2
+  output$plan2_sliders <- renderUI({
+    current <- family_data[[input$family]]$current_usage
+    average <- family_data[[input$family]]$average_usage
+    
+    map(seq_along(categories), ~{
+      sliderInput(
+        inputId = paste0("plan2_", .x),
+        label = categories[.x],
+        min = average[.x] * 0.5,
+        max = current[.x] * 1.2,
+        value = current[.x],
+        step = 1,
+        width = "100%"
+      )
+    })
+  })
+  
+  # Header with family name
+  output$family_header <- renderText({
+    paste(input$family, "Family Electricity Usage Plans")
+  })
+  
+  # Target text
+  output$target_text <- renderText({
+    family <- family_data[[input$family]]
+    if (family$target_type == "USD") {
+      sprintf("Target reduction: $%d", family$reduction_target)
+    } else {
+      sprintf("Target reduction: %d kWh", family$reduction_target)
+    }
+  })
+  
   # Reactive values for plan totals
   plan1_total <- reactive({
-    sum(sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]]))
+    req(input$family)
+    sum(sapply(seq_along(categories), function(i) {
+      val <- input[[paste0("plan1_", i)]]
+      if (is.null(val)) return(family_data[[input$family]]$current_usage[i])
+      val
+    }))
   })
   
   plan2_total <- reactive({
-    sum(sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]]))
+    req(input$family)
+    sum(sapply(seq_along(categories), function(i) {
+      val <- input[[paste0("plan2_", i)]]
+      if (is.null(val)) return(family_data[[input$family]]$current_usage[i])
+      val
+    }))
   })
   
   # Create comparison table
   output$comparison_table <- renderDT({
-    plan1_values <- sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]])
-    plan2_values <- sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]])
+    req(input$family)
+    current_usage <- family_data[[input$family]]$current_usage
+    average_usage <- family_data[[input$family]]$average_usage
+    
+    plan1_values <- sapply(seq_along(categories), function(i) {
+      val <- input[[paste0("plan1_", i)]]
+      if (is.null(val)) return(current_usage[i])
+      val
+    })
+    
+    plan2_values <- sapply(seq_along(categories), function(i) {
+      val <- input[[paste0("plan2_", i)]]
+      if (is.null(val)) return(current_usage[i])
+      val
+    })
     
     data.frame(
       Category = c(categories, "Total kWh"),
@@ -324,18 +363,74 @@ server <- function(input, output) {
   
   # Create summary text
   output$summary_text <- renderText({
-    current_cost <- sum(current_usage) * 0.15  # Assuming $0.15 per kWh
-    plan1_cost <- plan1_total() * 0.15
-    plan2_cost <- plan2_total() * 0.15
+    req(input$family)
+    current_usage <- family_data[[input$family]]$current_usage
+    target_type <- family_data[[input$family]]$target_type
     
-    sprintf(
-      "Current annual cost: $%.2f\nPlan 1 annual cost: $%.2f (savings: $%.2f)\nPlan 2 annual cost: $%.2f (savings: $%.2f)",
-      current_cost,
-      plan1_cost,
-      current_cost - plan1_cost,
-      plan2_cost,
-      current_cost - plan2_cost
-    )
+    if (target_type == "USD") {
+      current_cost <- sum(current_usage) * 0.15
+      plan1_cost <- plan1_total() * 0.15
+      plan2_cost <- plan2_total() * 0.15
+      
+      sprintf(
+        "Current annual cost: $%.2f\nPlan 1 annual cost: $%.2f (savings: $%.2f)\nPlan 2 annual cost: $%.2f (savings: $%.2f)",
+        current_cost,
+        plan1_cost,
+        current_cost - plan1_cost,
+        plan2_cost,
+        current_cost - plan2_cost
+      )
+    } else {
+      current_kwh <- sum(current_usage)
+      sprintf(
+        "Current annual usage: %d kWh\nPlan 1 annual usage: %d kWh (reduction: %d kWh)\nPlan 2 annual usage: %d kWh (reduction: %d kWh)",
+        current_kwh,
+        plan1_total(),
+        current_kwh - plan1_total(),
+        plan2_total(),
+        current_kwh - plan2_total()
+      )
+    }
+  })
+}
+
+shinyApp(ui, server)
+```
+
+
+
+
+
+
+
+
+```{r}
+#| eval: false
+##| standalone: true
+##| viewerHeight: 100
+
+# ```{shinylive-r}
+
+library(shiny)
+library(bslib)
+
+ui <- page_sidebar(
+  sidebar = sidebar(
+    sliderInput("mySlider", 
+                "Select a Value", 
+                min = 0, 
+                max = 100, 
+                value = 50)
+  ),
+  card(
+    card_header("Slider Value"),
+    textOutput("sliderValue")
+  )
+)
+
+server <- function(input, output, session) {
+  output$sliderValue <- renderText({
+    paste("Current Slider Value:", input$mySlider)
   })
 }
 

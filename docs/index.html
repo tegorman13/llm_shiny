@@ -128,7 +128,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Tutorial (Home)</span></a>
+<span class="menu-text">R-shinylive</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./sl_python.html"> 
+<span class="menu-text">Python-shinylive</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ojs.html"> 
+<span class="menu-text">ojs</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -173,40 +181,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">##| standalone: true</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">##| viewerHeight: 100</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ```{shinylive-r}</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">page_sidebar</span>(</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sliderInput</span>(<span class="st">"mySlider"</span>, </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Select a Value"</span>, </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">min =</span> <span class="dv">0</span>, </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">max =</span> <span class="dv">100</span>, </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">value =</span> <span class="dv">50</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">card</span>(</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">card_header</span>(<span class="st">"Slider Value"</span>),</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">textOutput</span>(<span class="st">"sliderValue"</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>sliderValue <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">"Current Slider Value:"</span>, input<span class="sc">$</span>mySlider)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
 <section id="action-plan-creation-task--davis-family-electricity-reduction" class="level1">
 <h1>Action Plan Creation Task- Davis Family Electricity Reduction</h1>
 <pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
@@ -390,7 +364,22 @@ library(bslib)
 library(DT)
 library(purrr)
 
-# Initial data
+# Data for both families
+family_data &lt;- list(
+  "Massachusetts" = list(
+    current_usage = c(419, 26751, 10543, 1230, 7350),
+    average_usage = c(322, 19108, 5070, 1025, 6682),
+    reduction_target = 1042,  # in dollars
+    target_type = "USD"
+  ),
+  "Colorado" = list(
+    current_usage = c(697, 18052, 11667, 1370, 7882),
+    average_usage = c(498, 16411, 5832, 1142, 6652),
+    reduction_target = 5965,  # in kWh
+    target_type = "kWh"
+  )
+)
+
 categories &lt;- c(
   "Cooling (Central A/C)",
   "Heating the Home",
@@ -399,47 +388,33 @@ categories &lt;- c(
   "Other (Television, Lighting, Electronics, Washer/Dryer, etc.)"
 )
 
-current_usage &lt;- c(419, 26751, 10543, 1230, 7350)
-average_usage &lt;- c(322, 19108, 5070, 1025, 6682)
-
 ui &lt;- page_sidebar(
   title = "Electricity Usage Action Plan Creator",
   sidebar = sidebar(
     title = "Action Plan Controls",
+    selectInput(
+      "family",
+      "Select Family",
+      choices = c("Massachusetts", "Colorado")
+    ),
+    textOutput("target_text"),
+    br(),
     accordion(
       accordion_panel(
         "Action Plan 1",
-        map(seq_along(categories), ~{
-          sliderInput(
-            inputId = paste0("plan1_", .x),
-            label = categories[.x],
-            min = average_usage[.x] * 0.5,
-            max = current_usage[.x] * 1.2,
-            value = current_usage[.x],
-            step = 1,
-            width = "100%"
-          )
-        })
+        uiOutput("plan1_sliders")
       ),
       accordion_panel(
         "Action Plan 2",
-        map(seq_along(categories), ~{
-          sliderInput(
-            inputId = paste0("plan2_", .x),
-            label = categories[.x],
-            min = average_usage[.x] * 0.5,
-            max = current_usage[.x] * 1.2,
-            value = current_usage[.x],
-            step = 1,
-            width = "100%"
-          )
-        })
+        uiOutput("plan2_sliders")
       )
     )
   ),
   
   card(
-    card_header("Massachusetts Family Electricity Usage Plans"),
+    card_header(
+      textOutput("family_header")
+    ),
     card_body(
       DTOutput("comparison_table"),
       hr(),
@@ -449,20 +424,95 @@ ui &lt;- page_sidebar(
   )
 )
 
-server &lt;- function(input, output) {
+server &lt;- function(input, output, session) {
+  
+  # Dynamic slider UI for Plan 1
+  output$plan1_sliders &lt;- renderUI({
+    current &lt;- family_data[[input$family]]$current_usage
+    average &lt;- family_data[[input$family]]$average_usage
+    
+    map(seq_along(categories), ~{
+      sliderInput(
+        inputId = paste0("plan1_", .x),
+        label = categories[.x],
+        min = average[.x] * 0.5,
+        max = current[.x] * 1.2,
+        value = current[.x],
+        step = 1,
+        width = "100%"
+      )
+    })
+  })
+  
+  # Dynamic slider UI for Plan 2
+  output$plan2_sliders &lt;- renderUI({
+    current &lt;- family_data[[input$family]]$current_usage
+    average &lt;- family_data[[input$family]]$average_usage
+    
+    map(seq_along(categories), ~{
+      sliderInput(
+        inputId = paste0("plan2_", .x),
+        label = categories[.x],
+        min = average[.x] * 0.5,
+        max = current[.x] * 1.2,
+        value = current[.x],
+        step = 1,
+        width = "100%"
+      )
+    })
+  })
+  
+  # Header with family name
+  output$family_header &lt;- renderText({
+    paste(input$family, "Family Electricity Usage Plans")
+  })
+  
+  # Target text
+  output$target_text &lt;- renderText({
+    family &lt;- family_data[[input$family]]
+    if (family$target_type == "USD") {
+      sprintf("Target reduction: $%d", family$reduction_target)
+    } else {
+      sprintf("Target reduction: %d kWh", family$reduction_target)
+    }
+  })
+  
   # Reactive values for plan totals
   plan1_total &lt;- reactive({
-    sum(sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]]))
+    req(input$family)
+    sum(sapply(seq_along(categories), function(i) {
+      val &lt;- input[[paste0("plan1_", i)]]
+      if (is.null(val)) return(family_data[[input$family]]$current_usage[i])
+      val
+    }))
   })
   
   plan2_total &lt;- reactive({
-    sum(sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]]))
+    req(input$family)
+    sum(sapply(seq_along(categories), function(i) {
+      val &lt;- input[[paste0("plan2_", i)]]
+      if (is.null(val)) return(family_data[[input$family]]$current_usage[i])
+      val
+    }))
   })
   
   # Create comparison table
   output$comparison_table &lt;- renderDT({
-    plan1_values &lt;- sapply(seq_along(categories), function(i) input[[paste0("plan1_", i)]])
-    plan2_values &lt;- sapply(seq_along(categories), function(i) input[[paste0("plan2_", i)]])
+    req(input$family)
+    current_usage &lt;- family_data[[input$family]]$current_usage
+    average_usage &lt;- family_data[[input$family]]$average_usage
+    
+    plan1_values &lt;- sapply(seq_along(categories), function(i) {
+      val &lt;- input[[paste0("plan1_", i)]]
+      if (is.null(val)) return(current_usage[i])
+      val
+    })
+    
+    plan2_values &lt;- sapply(seq_along(categories), function(i) {
+      val &lt;- input[[paste0("plan2_", i)]]
+      if (is.null(val)) return(current_usage[i])
+      val
+    })
     
     data.frame(
       Category = c(categories, "Total kWh"),
@@ -482,22 +532,72 @@ server &lt;- function(input, output) {
   
   # Create summary text
   output$summary_text &lt;- renderText({
-    current_cost &lt;- sum(current_usage) * 0.15  # Assuming $0.15 per kWh
-    plan1_cost &lt;- plan1_total() * 0.15
-    plan2_cost &lt;- plan2_total() * 0.15
+    req(input$family)
+    current_usage &lt;- family_data[[input$family]]$current_usage
+    target_type &lt;- family_data[[input$family]]$target_type
     
-    sprintf(
-      "Current annual cost: $%.2f\nPlan 1 annual cost: $%.2f (savings: $%.2f)\nPlan 2 annual cost: $%.2f (savings: $%.2f)",
-      current_cost,
-      plan1_cost,
-      current_cost - plan1_cost,
-      plan2_cost,
-      current_cost - plan2_cost
-    )
+    if (target_type == "USD") {
+      current_cost &lt;- sum(current_usage) * 0.15
+      plan1_cost &lt;- plan1_total() * 0.15
+      plan2_cost &lt;- plan2_total() * 0.15
+      
+      sprintf(
+        "Current annual cost: $%.2f\nPlan 1 annual cost: $%.2f (savings: $%.2f)\nPlan 2 annual cost: $%.2f (savings: $%.2f)",
+        current_cost,
+        plan1_cost,
+        current_cost - plan1_cost,
+        plan2_cost,
+        current_cost - plan2_cost
+      )
+    } else {
+      current_kwh &lt;- sum(current_usage)
+      sprintf(
+        "Current annual usage: %d kWh\nPlan 1 annual usage: %d kWh (reduction: %d kWh)\nPlan 2 annual usage: %d kWh (reduction: %d kWh)",
+        current_kwh,
+        plan1_total(),
+        current_kwh - plan1_total(),
+        plan2_total(),
+        current_kwh - plan2_total()
+      )
+    }
   })
 }
 
 shinyApp(ui, server)</code></pre>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">##| standalone: true</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">##| viewerHeight: 100</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ```{shinylive-r}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">page_sidebar</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sidebar =</span> <span class="fu">sidebar</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sliderInput</span>(<span class="st">"mySlider"</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Select a Value"</span>, </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">min =</span> <span class="dv">0</span>, </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">max =</span> <span class="dv">100</span>, </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">value =</span> <span class="dv">50</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">card</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">card_header</span>(<span class="st">"Slider Value"</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">textOutput</span>(<span class="st">"sliderValue"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>sliderValue <span class="ot">&lt;-</span> <span class="fu">renderText</span>({</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="st">"Current Slider Value:"</span>, input<span class="sc">$</span>mySlider)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 
 
 </section>
