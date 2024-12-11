@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Reduction Planning Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #2E8B57;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #999;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        #ai-assistant, #ai-search-assistant {
+            border: 1px solid #999;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+        }
+        .ai-message {
+            margin-bottom: 10px;
+        }
+        .ai-message p {
+            margin: 5px 0;
+        }
+        .user-input {
+            margin-bottom: 10px;
+        }
+        .user-input label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .user-input input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        #submit-plan, #proceed-to-plan, #get-ai-advice, #revise-plan {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #reduction-summary, #selected-info {
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        #detailed-data {
+            margin-top: 20px;
+        }
+        #detailed-data table {
+            width: 80%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Energy Reduction Planning Task</h1>
+
+<h2>Adams Family Energy Usage Data</h2>
+
+<p>The following table shows the Adams Family's energy usage from the prior year. Your task is to create an action plan to reduce their total energy usage by <strong>15%</strong>.</p>
+
+<table>
+    <tr>
+        <th>Appliance Category</th>
+        <th>Prior Year Usage (kWh)</th>
+    </tr>
+    <tr>
+        <td>Cooling</td>
+        <td>2,581</td>
+    </tr>
+    <tr>
+        <td>Heating</td>
+        <td>6,157</td>
+    </tr>
+    <tr>
+        <td>Water Heating</td>
+        <td>5,061</td>
+    </tr>
+    <tr>
+        <td>Refrigerator</td>
+        <td>1,266</td>
+    </tr>
+    <tr>
+        <td>Other Appliances</td>
+        <td>7,608</td>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th>22,673</th>
+    </tr>
+</table>
+
+<p>
+    The goal is to reduce the Adams Family's total energy usage by <strong>15%</strong>, which is <strong>3,401 kWh</strong> of their total usage of 22,673 kWh.
+</p>
+
+<h2>Information Search Phase</h2>
+
+<p>Before creating your energy reduction plan, you may choose additional information to reveal about the Adams Family's energy usage. This information may help you make a more informed plan. You can also consult the AI Advisor for suggestions on what information might be most useful.</p>
+
+<button type="button" id="get-ai-advice">Consult AI Advisor</button>
+
+<div id="ai-search-assistant" class="hidden">
+    <h2>AI Advisor Assistance</h2>
+    <div id="ai-search-messages">
+        <!-- AI messages will appear here -->
+    </div>
+</div>
+
+<h3>Select Information to Reveal:</h3>
+
+<form id="info-selection-form">
+    <!-- Cooling Details -->
+    <div class="user-input">
+        <label><strong>Cooling:</strong></label>
+        <input type="checkbox" name="info" value="cooling-thermostat"> Thermostat Settings<br>
+        <input type="checkbox" name="info" value="cooling-ac-unit"> AC Unit Efficiency<br>
+        <input type="checkbox" name="info" value="cooling-insulation"> Home Insulation Levels
+    </div>
+    <!-- Heating Details -->
+    <div class="user-input">
+        <label><strong>Heating:</strong></label>
+        <input type="checkbox" name="info" value="heating-thermostat"> Thermostat Settings<br>
+        <input type="checkbox" name="info" value="heating-furnace"> Furnace Efficiency<br>
+        <input type="checkbox" name="info" value="heating-insulation"> Home Insulation Levels
+    </div>
+    <!-- Water Heating Details -->
+    <div class="user-input">
+        <label><strong>Water Heating:</strong></label>
+        <input type="checkbox" name="info" value="waterheater-usage"> Average Hot Water Usage<br>
+        <input type="checkbox" name="info" value="waterheater-type"> Water Heater Type<br>
+        <input type="checkbox" name="info" value="waterheater-temp"> Water Heater Temperature Settings
+    </div>
+    <!-- Refrigerator Details -->
+    <div class="user-input">
+        <label><strong>Refrigerator:</strong></label>
+        <input type="checkbox" name="info" value="refrigerator-age"> Refrigerator Age<br>
+        <input type="checkbox" name="info" value="refrigerator-size"> Refrigerator Size<br>
+        <input type="checkbox" name="info" value="refrigerator-usage"> Usage Patterns
+    </div>
+    <!-- Other Appliances Details -->
+    <div class="user-input">
+        <label><strong>Other Appliances:</strong></label>
+        <input type="checkbox" name="info" value="appliances-lighting"> Lighting Usage<br>
+        <input type="checkbox" name="info" value="appliances-electronics"> Electronic Devices Usage<br>
+        <input type="checkbox" name="info" value="appliances-laundry"> Laundry Habits
+    </div>
+
+    <button type="button" id="reveal-info">Reveal Selected Information</button>
+</form>
+
+<div id="selected-info" class="hidden">
+    <h3>Revealed Information:</h3>
+    <div id="detailed-data">
+        <!-- Detailed data will be displayed here -->
+    </div>
+    <button type="button" id="proceed-to-plan">Proceed to Create Plan</button>
+</div>
+
+<h2 id="plan-section" class="hidden">Create Your Energy Reduction Plan</h2>
+
+<form id="reduction-form" class="hidden">
+    <div class="user-input">
+        <label>Cooling Reduction (kWh):</label>
+        <input type="number" id="cooling-reduction" min="0" max="2581" value="0">
+    </div>
+    <div class="user-input">
+        <label>Heating Reduction (kWh):</label>
+        <input type="number" id="heating-reduction" min="0" max="6157" value="0">
+    </div>
+    <div class="user-input">
+        <label>Water Heating Reduction (kWh):</label>
+        <input type="number" id="water-heating-reduction" min="0" max="5061" value="0">
+    </div>
+    <div class="user-input">
+        <label>Refrigerator Reduction (kWh):</label>
+        <input type="number" id="refrigerator-reduction" min="0" max="1266" value="0">
+    </div>
+    <div class="user-input">
+        <label>Other Appliances Reduction (kWh):</label>
+        <input type="number" id="other-reduction" min="0" max="7608" value="0">
+    </div>
+    <button type="button" id="submit-plan">Submit Plan</button>
+</form>
+
+<div id="reduction-summary" class="hidden">
+    <p><strong>Total Reduction:</strong> <span id="total-reduction">0</span> kWh</p>
+    <p><strong>Remaining Reduction Needed:</strong> <span id="remaining-reduction">3401</span> kWh</p>
+</div>
+
+<div id="ai-assistant" class="hidden">
+    <h2>AI Advisor Suggestions</h2>
+    <div id="ai-messages">
+        <!-- AI messages will appear here -->
+    </div>
+    <button type="button" id="revise-plan">Revise Plan</button>
+</div>
+
+<script>
+    // JavaScript code to handle the information search phase and AI assistant
+
+    const targetReduction = 3401; // 15% of 22,673 kWh
+    const totalUsage = {
+        cooling: 2581,
+        heating: 6157,
+        waterHeating: 5061,
+        refrigerator: 1266,
+        other: 7608
+    };
+
+    // Information Search Phase
+
+    const getAIAdviceButton = document.getElementById('get-ai-advice');
+    const aiSearchAssistantDiv = document.getElementById('ai-search-assistant');
+    const aiSearchMessagesDiv = document.getElementById('ai-search-messages');
+    const revealInfoButton = document.getElementById('reveal-info');
+    const selectedInfoDiv = document.getElementById('selected-info');
+    const detailedDataDiv = document.getElementById('detailed-data');
+    const proceedToPlanButton = document.getElementById('proceed-to-plan');
+
+    getAIAdviceButton.addEventListener('click', () => {
+        // Display AI advice on what information to select
+        aiSearchAssistantDiv.classList.remove('hidden');
+        aiSearchMessagesDiv.innerHTML = '';
+
+        const message = document.createElement('div');
+        message.classList.add('ai-message');
+        message.innerHTML = `<p><strong>AI Advisor:</strong> Based on the Adams Family's high energy usage in heating and other appliances, you might find it useful to reveal more details in those categories.</p>`;
+        aiSearchMessagesDiv.appendChild(message);
+    });
+
+    revealInfoButton.addEventListener('click', () => {
+        // Reveal selected information
+        const selectedOptions = document.querySelectorAll('input[name="info"]:checked');
+        if (selectedOptions.length === 0) {
+            alert('Please select at least one piece of information to reveal.');
+            return;
+        }
+        selectedInfoDiv.classList.remove('hidden');
+        detailedDataDiv.innerHTML = '';
+
+        selectedOptions.forEach(option => {
+            const infoDiv = document.createElement('div');
+            infoDiv.classList.add('info-item');
+            switch (option.value) {
+                // Cooling Details
+                case 'cooling-thermostat':
+                    infoDiv.innerHTML = `<h4>Cooling - Thermostat Settings:</h4>
+                    <p>The thermostat is often set to 68°F during the summer months.</p>`;
+                    break;
+                case 'cooling-ac-unit':
+                    infoDiv.innerHTML = `<h4>Cooling - AC Unit Efficiency:</h4>
+                    <p>The AC unit is 10 years old with SEER rating of 10.</p>`;
+                    break;
+                case 'cooling-insulation':
+                    infoDiv.innerHTML = `<h4>Cooling - Home Insulation Levels:</h4>
+                    <p>The home has standard insulation with some areas needing improvement.</p>`;
+                    break;
+                // Heating Details
+                case 'heating-thermostat':
+                    infoDiv.innerHTML = `<h4>Heating - Thermostat Settings:</h4>
+                    <p>The thermostat is set to 75°F during winter months.</p>`;
+                    break;
+                case 'heating-furnace':
+                    infoDiv.innerHTML = `<h4>Heating - Furnace Efficiency:</h4>
+                    <p>The furnace is 15 years old with 80% efficiency.</p>`;
+                    break;
+                case 'heating-insulation':
+                    infoDiv.innerHTML = `<h4>Heating - Home Insulation Levels:</h4>
+                    <p>The attic insulation is below recommended levels.</p>`;
+                    break;
+                // Water Heating Details
+                case 'waterheater-usage':
+                    infoDiv.innerHTML = `<h4>Water Heating - Average Hot Water Usage:</h4>
+                    <p>The family uses an average of 70 gallons of hot water per day.</p>`;
+                    break;
+                case 'waterheater-type':
+                    infoDiv.innerHTML = `<h4>Water Heating - Water Heater Type:</h4>
+                    <p>They have a standard electric water heater, 12 years old.</p>`;
+                    break;
+                case 'waterheater-temp':
+                    infoDiv.innerHTML = `<h4>Water Heating - Water Heater Temperature Settings:</h4>
+                    <p>The water heater is set to 140°F.</p>`;
+                    break;
+                // Refrigerator Details
+                case 'refrigerator-age':
+                    infoDiv.innerHTML = `<h4>Refrigerator - Age:</h4>
+                    <p>The refrigerator is 5 years old, Energy Star rated.</p>`;
+                    break;
+                case 'refrigerator-size':
+                    infoDiv.innerHTML = `<h4>Refrigerator - Size:</h4>
+                    <p>It's a large, side-by-side model with ice dispenser.</p>`;
+                    break;
+                case 'refrigerator-usage':
+                    infoDiv.innerHTML = `<h4>Refrigerator - Usage Patterns:</h4>
+                    <p>The refrigerator door is opened frequently throughout the day.</p>`;
+                    break;
+                // Other Appliances Details
+                case 'appliances-lighting':
+                    infoDiv.innerHTML = `<h4>Other Appliances - Lighting Usage:</h4>
+                    <p>The home uses mostly incandescent bulbs, lights are often left on.</p>`;
+                    break;
+                case 'appliances-electronics':
+                    infoDiv.innerHTML = `<h4>Other Appliances - Electronic Devices Usage:</h4>
+                    <p>Multiple TVs and computers are left in standby mode.</p>`;
+                    break;
+                case 'appliances-laundry':
+                    infoDiv.innerHTML = `<h4>Other Appliances - Laundry Habits:</h4>
+                    <p>Laundry is done daily with hot water washes and electric drying.</p>`;
+                    break;
+                default:
+                    break;
+            }
+            detailedDataDiv.appendChild(infoDiv);
+        });
+    });
+
+    proceedToPlanButton.addEventListener('click', () => {
+        // Proceed to the planning phase
+        document.getElementById('plan-section').classList.remove('hidden');
+        document.getElementById('reduction-form').classList.remove('hidden');
+        document.getElementById('reduction-summary').classList.remove('hidden');
+        // Scroll to the planning section
+        document.getElementById('plan-section').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Planning Phase
+
+    const reductionInputs = {
+        cooling: document.getElementById('cooling-reduction'),
+        heating: document.getElementById('heating-reduction'),
+        waterHeating: document.getElementById('water-heating-reduction'),
+        refrigerator: document.getElementById('refrigerator-reduction'),
+        other: document.getElementById('other-reduction')
+    };
+
+    const totalReductionDisplay = document.getElementById('total-reduction');
+    const remainingReductionDisplay = document.getElementById('remaining-reduction');
+    const submitPlanButton = document.getElementById('submit-plan');
+    const aiAssistantDiv = document.getElementById('ai-assistant');
+    const aiMessagesDiv = document.getElementById('ai-messages');
+    const revisePlanButton = document.getElementById('revise-plan');
+
+    function calculateTotalReduction() {
+        let totalReduction = 0;
+        for (let key in reductionInputs) {
+            totalReduction += parseInt(reductionInputs[key].value) || 0;
+        }
+        return totalReduction;
+    }
+
+    function updateReductionSummary() {
+        const totalReduction = calculateTotalReduction();
+        totalReductionDisplay.textContent = totalReduction;
+        const remainingReduction = targetReduction - totalReduction;
+        remainingReductionDisplay.textContent = remainingReduction > 0 ? remainingReduction : 0;
+    }
+
+    // Update summary when inputs change
+    for (let key in reductionInputs) {
+        reductionInputs[key].addEventListener('input', updateReductionSummary);
+    }
+
+    submitPlanButton.addEventListener('click', () => {
+        // After initial plan, display AI assistant suggestions
+        aiAssistantDiv.classList.remove('hidden');
+        generateAISuggestions();
+        // Disable inputs to simulate moving to the next phase
+        for (let key in reductionInputs) {
+            reductionInputs[key].disabled = true;
+        }
+        submitPlanButton.disabled = true;
+    });
+
+    function generateAISuggestions() {
+        // For demo purposes, we'll provide static AI suggestions
+        aiMessagesDiv.innerHTML = '';
+
+        const totalReduction = calculateTotalReduction();
+        const remainingReduction = targetReduction - totalReduction;
+
+        if (remainingReduction > 0) {
+            const message1 = document.createElement('div');
+            message1.classList.add('ai-message');
+            message1.innerHTML = `<p><strong>AI Advisor:</strong> To meet your reduction goal, consider focusing on appliances with higher consumption.</p>`;
+            aiMessagesDiv.appendChild(message1);
+
+            const message2 = document.createElement('div');
+            message2.classList.add('ai-message');
+            message2.innerHTML = `<p>Based on the information you revealed, addressing <strong>heating</strong> and <strong>other appliances</strong> could be effective.</p>`;
+            aiMessagesDiv.appendChild(message2);
+
+            const message3 = document.createElement('div');
+            message3.classList.add('ai-message');
+            message3.innerHTML = `<p>For example, lowering the thermostat by a few degrees and upgrading to energy-efficient lighting might provide significant savings.</p>`;
+            aiMessagesDiv.appendChild(message3);
+        } else {
+            const message = document.createElement('div');
+            message.classList.add('ai-message');
+            message.innerHTML = `<p><strong>AI Advisor:</strong> Great job! You've met the reduction goal. Consider if further reductions are feasible without impacting comfort.</p>`;
+            aiMessagesDiv.appendChild(message);
+        }
+    }
+
+    revisePlanButton.addEventListener('click', () => {
+        // Allow the user to revise their plan
+        aiAssistantDiv.classList.add('hidden');
+        for (let key in reductionInputs) {
+            reductionInputs[key].disabled = false;
+        }
+        submitPlanButton.disabled = false;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Reduction Planning Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #2E8B57;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #999;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        #ai-assistant {
+            border: 1px solid #999;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+            display: none;
+        }
+        .ai-message {
+            margin-bottom: 10px;
+        }
+        .ai-message p {
+            margin: 5px 0;
+        }
+        .user-input {
+            margin-bottom: 10px;
+        }
+        .user-input label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .user-input input {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        #submit-plan {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #reduction-summary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Energy Reduction Planning Task</h1>
+
+<h2>Adams Family Energy Usage Data</h2>
+
+<table>
+    <tr>
+        <th>Appliance Category</th>
+        <th>State Average Usage (kWh)</th>
+        <th>Adams Family Prior Year Usage (kWh)</th>
+    </tr>
+    <tr>
+        <td>Cooling</td>
+        <td>1,289</td>
+        <td>2,581</td>
+    </tr>
+    <tr>
+        <td>Heating</td>
+        <td>5,597</td>
+        <td>6,157</td>
+    </tr>
+    <tr>
+        <td>Water Heating</td>
+        <td>4,601</td>
+        <td>5,061</td>
+    </tr>
+    <tr>
+        <td>Refrigerator</td>
+        <td>1,055</td>
+        <td>1,266</td>
+    </tr>
+    <tr>
+        <td>Other Appliances</td>
+        <td>6,916</td>
+        <td>7,608</td>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th>19,458</th>
+        <th>22,673</th>
+    </tr>
+</table>
+
+<p>
+    The goal is to reduce the Adams Family's total energy usage by <strong>15%</strong>, which is <strong>3,401 kWh</strong> of their total usage of 22,673 kWh.
+</p>
+
+<h2>Create Your Initial Energy Reduction Plan</h2>
+
+<form id="reduction-form">
+    <div class="user-input">
+        <label>Cooling Reduction (kWh):</label>
+        <input type="number" id="cooling-reduction" min="0" max="2581" value="0">
+    </div>
+    <div class="user-input">
+        <label>Heating Reduction (kWh):</label>
+        <input type="number" id="heating-reduction" min="0" max="6157" value="0">
+    </div>
+    <div class="user-input">
+        <label>Water Heating Reduction (kWh):</label>
+        <input type="number" id="water-heating-reduction" min="0" max="5061" value="0">
+    </div>
+    <div class="user-input">
+        <label>Refrigerator Reduction (kWh):</label>
+        <input type="number" id="refrigerator-reduction" min="0" max="1266" value="0">
+    </div>
+    <div class="user-input">
+        <label>Other Appliances Reduction (kWh):</label>
+        <input type="number" id="other-reduction" min="0" max="7608" value="0">
+    </div>
+    <button type="button" id="submit-plan">Submit Initial Plan</button>
+</form>
+
+<div id="reduction-summary">
+    <p><strong>Total Reduction:</strong> <span id="total-reduction">0</span> kWh</p>
+    <p><strong>Remaining Reduction Needed:</strong> <span id="remaining-reduction">3401</span> kWh</p>
+</div>
+
+<div id="ai-assistant">
+    <h2>AI Advisor Suggestions</h2>
+    <div id="ai-messages">
+        <!-- AI messages will appear here -->
+    </div>
+    <button type="button" id="revise-plan">Revise Plan</button>
+</div>
+
+<script>
+    // JavaScript code to handle the form and AI assistant
+
+    const targetReduction = 3401; // 15% of 22,673 kWh
+    const totalUsage = {
+        cooling: 2581,
+        heating: 6157,
+        waterHeating: 5061,
+        refrigerator: 1266,
+        other: 7608
+    };
+
+    const reductionInputs = {
+        cooling: document.getElementById('cooling-reduction'),
+        heating: document.getElementById('heating-reduction'),
+        waterHeating: document.getElementById('water-heating-reduction'),
+        refrigerator: document.getElementById('refrigerator-reduction'),
+        other: document.getElementById('other-reduction')
+    };
+
+    const totalReductionDisplay = document.getElementById('total-reduction');
+    const remainingReductionDisplay = document.getElementById('remaining-reduction');
+    const submitPlanButton = document.getElementById('submit-plan');
+    const aiAssistantDiv = document.getElementById('ai-assistant');
+    const aiMessagesDiv = document.getElementById('ai-messages');
+    const revisePlanButton = document.getElementById('revise-plan');
+
+    function calculateTotalReduction() {
+        let totalReduction = 0;
+        for (let key in reductionInputs) {
+            totalReduction += parseInt(reductionInputs[key].value) || 0;
+        }
+        return totalReduction;
+    }
+
+    function updateReductionSummary() {
+        const totalReduction = calculateTotalReduction();
+        totalReductionDisplay.textContent = totalReduction;
+        const remainingReduction = targetReduction - totalReduction;
+        remainingReductionDisplay.textContent = remainingReduction > 0 ? remainingReduction : 0;
+    }
+
+    // Update summary when inputs change
+    for (let key in reductionInputs) {
+        reductionInputs[key].addEventListener('input', updateReductionSummary);
+    }
+
+    submitPlanButton.addEventListener('click', () => {
+        // After initial plan, display AI assistant suggestions
+        aiAssistantDiv.style.display = 'block';
+        generateAISuggestions();
+        // Disable inputs to simulate moving to the next phase
+        for (let key in reductionInputs) {
+            reductionInputs[key].disabled = true;
+        }
+        submitPlanButton.disabled = true;
+    });
+
+    function generateAISuggestions() {
+        // For demo purposes, we'll provide static AI suggestions
+        aiMessagesDiv.innerHTML = '';
+
+        const totalReduction = calculateTotalReduction();
+        const remainingReduction = targetReduction - totalReduction;
+
+        if (remainingReduction > 0) {
+            const message1 = document.createElement('div');
+            message1.classList.add('ai-message');
+            message1.innerHTML = `<p><strong>AI Advisor:</strong> To meet your reduction goal, consider focusing on appliances with higher consumption.</p>`;
+            aiMessagesDiv.appendChild(message1);
+
+            const message2 = document.createElement('div');
+            message2.classList.add('ai-message');
+            message2.innerHTML = `<p>For instance, heating accounts for a significant portion of usage. Reducing heating by an additional <strong>${Math.ceil(remainingReduction / 2)} kWh</strong> could help reach your goal.</p>`;
+            aiMessagesDiv.appendChild(message2);
+        } else {
+            const message = document.createElement('div');
+            message.classList.add('ai-message');
+            message.innerHTML = `<p><strong>AI Advisor:</strong> Great job! You've met the reduction goal. Consider if further reductions are feasible without impacting comfort.</p>`;
+            aiMessagesDiv.appendChild(message);
+        }
+    }
+
+    revisePlanButton.addEventListener('click', () => {
+        // Allow the user to revise their plan
+        aiAssistantDiv.style.display = 'none';
+        for (let key in reductionInputs) {
+            reductionInputs[key].disabled = false;
+        }
+        submitPlanButton.disabled = false;
+    });
+</script>
+
+</body>
+</html>

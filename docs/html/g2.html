@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Energy Planning Task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .input-area {
+            margin-top: 20px;
+        }
+        input[type="number"] {
+            width: 80px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .info-section {
+            background-color: #e7e7e7;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .ai-section {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .info-option {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Energy Planning Task</h1>
+
+        <h2>Scenario: <span id="family-name"></span> Family</h2>
+        <p>Your goal is to create an energy reduction plan for the <span id="family-name2"></span> family.</p>
+
+        <div class="info-section">
+            <h3><span id="family-name3"></span> Family - Past Year Energy Usage (kWh)</h3>
+            <table id="usage-data"></table>
+        </div>
+
+        <div class="info-section">
+            <h3>Select Information to Reveal:</h3>
+            <div id="info-options">
+                <!-- Information options will be dynamically added here -->
+            </div>
+            <button onclick="revealSelectedInfo()">Reveal Selected Info</button>
+        </div>
+
+        <div id="revealed-info-section">
+            <!-- Revealed information will be displayed here -->
+        </div>
+
+        <div class="input-area">
+            <h3>Create Energy Reduction Plan</h3>
+            <p>Target Reduction Goal: <span id="reduction-goal"></span></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Proposed Usage (kWh)</th>
+                    </tr>
+                </thead>
+                <tbody id="plan-table">
+                    <!-- Input fields will be added here -->
+                </tbody>
+            </table>
+            <button onclick="submitPlan()">Submit Plan</button>
+        </div>
+
+        <div class="ai-section">
+            <h3>AI Advisor Suggestions</h3>
+            <p>You can ask the AI for advice on what information to reveal.</p>
+            <input type="text" id="ai-query" placeholder="Ask the AI...">
+            <button onclick="queryAI()">Query AI</button>
+            <p id="ai-comments">The AI will provide suggestions and feedback here.</p>
+        </div>
+    </div>
+
+    <script>
+        const families = {
+            "Adams": {
+                state: "California",
+                rate: 0.15,
+                usage: {
+                    "Cooling": 2581,
+                    "Heating": 6157,
+                    "Water heating": 5061,
+                    "Refrigerator": 1266,
+                    "Other": 7608,
+                    "Total": 22673
+                },
+                stateAvg: {
+                    "Cooling": 1289,
+                    "Heating": 5597,
+                    "Water heating": 4601,
+                    "Refrigerator": 1055,
+                    "Other": 6916,
+                    "Total": 19458
+                },
+                infoOptions: {
+                    "Central AC Usage": "Detailed breakdown of central air conditioning energy consumption.",
+                    "Window AC Units Usage": "Energy usage for individual window air conditioning units.",
+                    "Fans Usage": "Energy consumption by different types of fans (ceiling, box, etc.).",
+                    "Furnace Usage": "Detailed breakdown of furnace energy consumption.",
+                    "Boiler Usage": "Energy usage by the boiler for heating.",
+                    "Heat Pump Usage": "Energy consumption by the heat pump system.",
+                    "Electric Water Heater Usage": "Detailed breakdown of electric water heater energy consumption.",
+                    "Gas Water Heater Usage": "Energy usage by the gas water heater.",
+                    "Tankless Water Heater Usage": "Energy consumption by the tankless water heater system.",
+                    "Refrigerator Energy Star Rating": "Information about the energy efficiency rating of the refrigerator.",
+                    "Refrigerator Age and Model": "Details on the age and model of the refrigerator and its estimated energy consumption.",
+                    "Freezer Usage": "Energy consumption by the standalone freezer unit.",
+                    "Lighting Usage": "Breakdown of energy used by different types of lighting (incandescent, LED, etc.).",
+                    "Television Usage": "Energy consumption by different types and sizes of televisions.",
+                    "Computer and Internet Usage": "Energy used by computers, laptops, monitors, and internet devices.",
+                    "Kitchen Appliances Usage": "Breakdown of energy used by kitchen appliances (oven, microwave, dishwasher, etc.).",
+                    "Laundry Appliances Usage": "Energy consumption by washing machine and dryer.",
+                    "Other Electronics Usage": "Energy used by other electronic devices (gaming consoles, audio equipment, etc.)."
+                }
+            },
+            "Smith": {
+                state: "Texas",
+                rate: 0.11,
+                usage: {
+                    "Cooling": 6573,
+                    "Heating": 6118,
+                    "Water heating": 5257,
+                    "Refrigerator": 2639,
+                    "Other": 8459,
+                    "Total": 29046
+                },
+                stateAvg: {
+                    "Cooling": 4249,
+                    "Heating": 5099,
+                    "Water heating": 4396,
+                    "Refrigerator": 1318,
+                    "Other": 7883,
+                    "Total": 22945
+                },
+                infoOptions: {
+                    "Central AC Usage": "Detailed breakdown of central air conditioning energy consumption.",
+                    "Window AC Units Usage": "Energy usage for individual window air conditioning units.",
+                    "Fans Usage": "Energy consumption by different types of fans (ceiling, box, etc.).",
+                    "Furnace Usage": "Detailed breakdown of furnace energy consumption.",
+                    "Boiler Usage": "Energy usage by the boiler for heating.",
+                    "Heat Pump Usage": "Energy consumption by the heat pump system.",
+                    "Electric Water Heater Usage": "Detailed breakdown of electric water heater energy consumption.",
+                    "Gas Water Heater Usage": "Energy usage by the gas water heater.",
+                    "Tankless Water Heater Usage": "Energy consumption by the tankless water heater system.",
+                    "Refrigerator Energy Star Rating": "Information about the energy efficiency rating of the refrigerator.",
+                    "Refrigerator Age and Model": "Details on the age and model of the refrigerator and its estimated energy consumption.",
+                    "Freezer Usage": "Energy consumption by the standalone freezer unit.",
+                    "Lighting Usage": "Breakdown of energy used by different types of lighting (incandescent, LED, etc.).",
+                    "Television Usage": "Energy consumption by different types and sizes of televisions.",
+                    "Computer and Internet Usage": "Energy used by computers, laptops, monitors, and internet devices.",
+                    "Kitchen Appliances Usage": "Breakdown of energy used by kitchen appliances (oven, microwave, dishwasher, etc.).",
+                    "Laundry Appliances Usage": "Energy consumption by washing machine and dryer.",
+                    "Other Electronics Usage": "Energy used by other electronic devices (gaming consoles, audio equipment, etc.)."
+                }
+            },
+            "Wells": {
+                state: "Colorado",
+                rate: 0.11,
+                usage: {
+                    "Cooling": 697,
+                    "Heating": 18052,
+                    "Water heating": 11667,
+                    "Refrigerator": 1370,
+                    "Other": 7982,
+                    "Total": 39768
+                },
+                stateAvg: {
+                    "Cooling": 498,
+                    "Heating": 16411,
+                    "Water heating": 5832,
+                    "Refrigerator": 1142,
+                    "Other": 6652,
+                    "Total": 30535
+                },
+                infoOptions: {
+                    "Central AC Usage": "Detailed breakdown of central air conditioning energy consumption.",
+                    "Window AC Units Usage": "Energy usage for individual window air conditioning units.",
+                    "Fans Usage": "Energy consumption by different types of fans (ceiling, box, etc.).",
+                    "Furnace Usage": "Detailed breakdown of furnace energy consumption.",
+                    "Boiler Usage": "Energy usage by the boiler for heating.",
+                    "Heat Pump Usage": "Energy consumption by the heat pump system.",
+                    "Electric Water Heater Usage": "Detailed breakdown of electric water heater energy consumption.",
+                    "Gas Water Heater Usage": "Energy usage by the gas water heater.",
+                    "Tankless Water Heater Usage": "Energy consumption by the tankless water heater system.",
+                    "Refrigerator Energy Star Rating": "Information about the energy efficiency rating of the refrigerator.",
+                    "Refrigerator Age and Model": "Details on the age and model of the refrigerator and its estimated energy consumption.",
+                    "Freezer Usage": "Energy consumption by the standalone freezer unit.",
+                    "Lighting Usage": "Breakdown of energy used by different types of lighting (incandescent, LED, etc.).",
+                    "Television Usage": "Energy consumption by different types and sizes of televisions.",
+                    "Computer and Internet Usage": "Energy used by computers, laptops, monitors, and internet devices.",
+                    "Kitchen Appliances Usage": "Breakdown of energy used by kitchen appliances (oven, microwave, dishwasher, etc.).",
+                    "Laundry Appliances Usage": "Energy consumption by washing machine and dryer.",
+                    "Other Electronics Usage": "Energy used by other electronic devices (gaming consoles, audio equipment, etc.)."
+                }
+            }
+        };
+
+        let currentFamily = "Adams"; // Start with the Adams family
+
+        function initializeTask() {
+            setupFamilyScenario();
+            populateUsageTable();
+            populateInfoOptions();
+            populatePlanTable();
+            setReductionGoal();
+        }
+
+        function setupFamilyScenario() {
+            document.getElementById("family-name").textContent = currentFamily;
+            document.getElementById("family-name2").textContent = currentFamily;
+            document.getElementById("family-name3").textContent = currentFamily;
+        }
+
+        function populateUsageTable() {
+            const table = document.getElementById("usage-data");
+            table.innerHTML = `
+                <tr>
+                    <th>Source</th>
+                    <th>Past Year Usage (kWh)</th>
+                </tr>
+            `;
+            const family = families[currentFamily];
+            for (const source in family.usage) {
+                if (source !== "Total") {
+                    const row = table.insertRow();
+                    const sourceCell = row.insertCell();
+                    const usageCell = row.insertCell();
+                    sourceCell.textContent = source;
+                    usageCell.textContent = family.usage[source];
+                }
+            }
+            const totalRow = table.insertRow();
+            const totalSourceCell = totalRow.insertCell();
+            const totalUsageCell = totalRow.insertCell();
+            totalSourceCell.textContent = "Total";
+            totalUsageCell.textContent = family.usage["Total"];
+        }
+
+        function populateInfoOptions() {
+            const infoOptionsDiv = document.getElementById("info-options");
+            const family = families[currentFamily];
+            for (const option in family.infoOptions) {
+                const optionDiv = document.createElement("div");
+                optionDiv.className = "info-option";
+                optionDiv.innerHTML = `
+                    <input type="checkbox" id="${option}" name="info-option" value="${option}">
+                    <label for="${option}">${option}</label>
+                    <span class="tooltip" title="${family.infoOptions[option]}">?</span>
+                `;
+                infoOptionsDiv.appendChild(optionDiv);
+            }
+        }
+
+        function populatePlanTable() {
+            const table = document.getElementById("plan-table");
+            table.innerHTML = "";
+            const family = families[currentFamily];
+            for (const source in family.usage) {
+                if (source !== "Total") {
+                    const row = table.insertRow();
+                    const sourceCell = row.insertCell();
+                    const inputCell = row.insertCell();
+                    sourceCell.textContent = source;
+                    inputCell.innerHTML = `<input type="number" id="${source}-input" value="${family.usage[source]}">`;
+                }
+            }
+        }
+
+        function setReductionGoal() {
+            const family = families[currentFamily];
+            const reductionGoal = Math.round(family.usage["Total"] * 0.15);
+            document.getElementById("reduction-goal").textContent = `${reductionGoal} kWh`;
+        }
+
+        function revealSelectedInfo() {
+            const selectedOptions = document.querySelectorAll('input[name="info-option"]:checked');
+            const revealedInfoSection = document.getElementById("revealed-info-section");
+            revealedInfoSection.innerHTML = "<h3>Revealed Information:</h3>";
+
+            selectedOptions.forEach(option => {
+                const infoDiv = document.createElement("div");
+                infoDiv.innerHTML = `
+                    <h4>${option.value}</h4>
+                    <p>Details about ${option.value} for the ${currentFamily} family will be shown here.</p>
+                `;
+                revealedInfoSection.appendChild(infoDiv);
+            });
+        }
+
+        function queryAI() {
+            const query = document.getElementById("ai-query").value;
+            // Placeholder for AI response
+            const aiResponse = `Based on your query, I recommend focusing on ${currentFamily} family's: Central AC, Refrigerator, and Lighting usage.`;
+            document.getElementById("ai-comments").textContent = aiResponse;
+        }
+
+        function submitPlan() {
+            // Basic validation and feedback for demo purposes
+            let totalProposedUsage = 0;
+            for (const source in families[currentFamily].usage) {
+                if (source !== "Total") {
+                    const input = document.getElementById(`${source}-input`);
+                    totalProposedUsage += parseInt(input.value);
+                }
+            }
+
+            const family = families[currentFamily];
+            const reductionGoal = Math.round(family.usage["Total"] * 0.15);
+            const difference = family.usage["Total"] - totalProposedUsage;
+            let feedback = "";
+
+            if (totalProposedUsage > family.usage["Total"]) {
+                feedback = `Your proposed usage is ${totalProposedUsage - family.usage["Total"]} kWh above the current usage. Consider revising your plan.`;
+            } else if (difference === reductionGoal) {
+                feedback = "Congratulations! Your plan meets the reduction goal exactly.";
+            } else if (difference >= reductionGoal) {
+                feedback = `Great job! Your plan exceeds the reduction goal by ${difference - reductionGoal} kWh.`;
+            } else {
+                feedback = `Your plan reduces energy usage, but falls short of the goal by ${reductionGoal - difference} kWh.`;
+            }
+
+            document.getElementById("ai-comments").textContent = feedback;
+        }
+
+        initializeTask();
+    </script>
+</body>
+</html>

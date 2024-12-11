@@ -1,0 +1,49 @@
+---
+title: "Representation_Study Follow-up"
+code-fold: true
+toc: false
+
+format:
+  html:
+    grid: 
+      body-width: 1350px
+      sidebar-width: 100px
+      margin-width: 100px
+---
+
+# Task Alt 1
+
+```{=html}
+
+<iframe 
+  src="/html/g3.html" 
+  frameborder="0" 
+  style="overflow:hidden; height:250vh; width:95%; border:2px solid #ccc;" 
+  height="250vh" 
+  width="100%" 
+  name="g2">
+</iframe>
+
+
+```
+
+<br> <br>
+
+# Task alt 2
+
+```{=html}
+
+<iframe 
+  src="/html/o3.html" 
+  frameborder="0" 
+  style="overflow:hidden; height:250vh; width:95%; border:2px solid #ccc;" 
+  height="250vh" 
+  width="100%" 
+  name="o2">
+</iframe>
+
+
+```
+
+
+

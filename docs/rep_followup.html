@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Python-shinylive app in Quarto! – AI task demos</title>
+<title>Representation_Study Follow-up – AI task demos</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -38,12 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-07c16812f08c4a1591d6ec4fc46327fa.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-71bb10dfa3458031f7b5b13ea84e7d65.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<meta name="shinylive:serviceworker_dir" content=".">
-<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/load-shinylive-sw.js" type="module"></script>
-<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/run-python-blocks.js" type="module"></script>
-<link href="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/shinylive.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3ed9da7d034fbbb748c44a619c27c90b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,10 +68,9 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="style.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -97,7 +91,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">R-shinylive</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./sl_python.html" aria-current="page"> 
+    <a class="nav-link" href="./sl_python.html"> 
 <span class="menu-text">Python-shinylive</span></a>
   </li>  
   <li class="nav-item">
@@ -105,7 +99,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">ojs</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./rep_followup.html"> 
+    <a class="nav-link active" href="./rep_followup.html" aria-current="page"> 
 <span class="menu-text">Rep Study Followup</span></a>
   </li>  
 </ul>
@@ -119,24 +113,13 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#python-version" id="toc-python-version" class="nav-link active" data-scroll-target="#python-version">Python Version</a></li>
-  <li><a href="#shinylive" id="toc-shinylive" class="nav-link" data-scroll-target="#shinylive">shinylive</a></li>
-  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">python</a></li>
-  <li><a href="#misc" id="toc-misc" class="nav-link" data-scroll-target="#misc">Misc</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Python-shinylive app in Quarto!</h1>
+<h1 class="title">Representation_Study Follow-up</h1>
 </div>
 
 
@@ -153,228 +136,22 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="python-version" class="level1">
-<h1>Python Version</h1>
-<pre class="shinylive-python" data-engine="python"><code>#| '!! shinylive warning !!': |
-#|   shinylive does not work in self-contained HTML documents.
-#|   Please set `embed-resources: false` in your metadata.
-#| standalone: true
-#| viewerHeight: 700
+<section id="task-alt-1" class="level1">
+<h1>Task Alt 1</h1>
 
-from shiny import App, ui, render
-from pathlib import Path
+<iframe src="./html/g3.html" frameborder="0" style="overflow:hidden; height:250vh; width:95%; border:2px solid #ccc;" height="250vh" width="100%" name="g2">
+</iframe>
 
-app_ui = ui.page_fluid(
-    ui.head_content(
-        ui.tags.style("""
-            .table-bordered {
-                border: 1px solid #dee2e6;
-            }
-            .table-bordered th, 
-            .table-bordered td {
-                border: 1px solid #dee2e6;
-                text-align: center;
-                vertical-align: middle;
-            }
-        """)
-    ),
-    ui.h2("Action Plan Creation - Davis Family Electricity Reduction"),
-    ui.row(
-        ui.column(12,
-            ui.tags.table(
-                {"class": "table table-bordered"},
-                ui.tags.thead(
-                    ui.tags.tr(
-                        ui.tags.th("Category"),
-                        ui.tags.th("Last Year (Davis Family)"),
-                        ui.tags.th("Massachusetts Average"),
-                        ui.tags.th("Action Plan 1"),
-                        ui.tags.th("Action Plan 2")
-                    )
-                ),
-                ui.tags.tbody(
-                    # Cooling row
-                    ui.tags.tr(
-                        ui.tags.td("Cooling (Central A/C)"),
-                        ui.tags.td("419"),
-                        ui.tags.td("322"),
-                        ui.tags.td(
-                            ui.input_slider("cooling_plan1", None, 
-                                          min=0, max=419, 
-                                          value=419, step=1)
-                        ),
-                        ui.tags.td(
-                            ui.input_slider("cooling_plan2", None, 
-                                          min=0, max=419, 
-                                          value=419, step=1)
-                        )
-                    ),
-                    # Heating row
-                    ui.tags.tr(
-                        ui.tags.td("Heating the Home"),
-                        ui.tags.td("26,751"),
-                        ui.tags.td("19,108"),
-                        ui.tags.td(
-                            ui.input_slider("heating_plan1", None, 
-                                          min=0, max=26751, 
-                                          value=26751, step=1)
-                        ),
-                        ui.tags.td(
-                            ui.input_slider("heating_plan2", None, 
-                                          min=0, max=26751, 
-                                          value=26751, step=1)
-                        )
-                    ),
-                    # Water Heating row
-                    ui.tags.tr(
-                        ui.tags.td("Water Heating"),
-                        ui.tags.td("10,543"),
-                        ui.tags.td("5,070"),
-                        ui.tags.td(
-                            ui.input_slider("water_plan1", None, 
-                                          min=0, max=10543, 
-                                          value=10543, step=1)
-                        ),
-                        ui.tags.td(
-                            ui.input_slider("water_plan2", None, 
-                                          min=0, max=10543, 
-                                          value=10543, step=1)
-                        )
-                    ),
-                    # Refrigerator row
-                    ui.tags.tr(
-                        ui.tags.td("Refrigerator"),
-                        ui.tags.td("1,230"),
-                        ui.tags.td("1,025"),
-                        ui.tags.td(
-                            ui.input_slider("fridge_plan1", None, 
-                                          min=0, max=1230, 
-                                          value=1230, step=1)
-                        ),
-                        ui.tags.td(
-                            ui.input_slider("fridge_plan2", None, 
-                                          min=0, max=1230, 
-                                          value=1230, step=1)
-                        )
-                    ),
-                    # Other row
-                    ui.tags.tr(
-                        ui.tags.td("Other (TV, Lighting, Electronics, etc.)"),
-                        ui.tags.td("7,350"),
-                        ui.tags.td("6,682"),
-                        ui.tags.td(
-                            ui.input_slider("other_plan1", None, 
-                                          min=0, max=7350, 
-                                          value=7350, step=1)
-                        ),
-                        ui.tags.td(
-                            ui.input_slider("other_plan2", None, 
-                                          min=0, max=7350, 
-                                          value=7350, step=1)
-                        )
-                    ),
-                    # Total row
-                    ui.tags.tr(
-                        ui.tags.td(ui.tags.strong("Total kWh")),
-                        ui.tags.td("46,293"),
-                        ui.tags.td("32,207"),
-                        ui.tags.td(ui.tags.strong(ui.output_text("total_plan1"))),
-                        ui.tags.td(ui.tags.strong(ui.output_text("total_plan2")))
-                    )
-                )
-            )
-        )
-    )
-)
 
-def server(input, output, session):
-    @output
-    @render.text
-    def total_plan1():
-        total = (input.cooling_plan1() + 
-                input.heating_plan1() + 
-                input.water_plan1() + 
-                input.fridge_plan1() + 
-                input.other_plan1())
-        return f"{total:,}"
-    
-    @output
-    @render.text
-    def total_plan2():
-        total = (input.cooling_plan2() + 
-                input.heating_plan2() + 
-                input.water_plan2() + 
-                input.fridge_plan2() + 
-                input.other_plan2())
-        return f"{total:,}"
-
-app = App(app_ui, server)</code></pre>
+<p><br> <br></p>
 </section>
-<section id="shinylive" class="level1">
-<h1>shinylive</h1>
-<pre class="shinylive-python" data-engine="python"><code>#| '!! shinylive warning !!': |
-#|   shinylive does not work in self-contained HTML documents.
-#|   Please set `embed-resources: false` in your metadata.
-#| standalone: true
-from shiny import *
-import sys
+<section id="task-alt-2" class="level1">
+<h1>Task alt 2</h1>
 
-app_ui = ui.page_fluid(
-    ui.output_text_verbatim("txt"),
-)
-
-def server(input, output, session):
-    @output
-    @render.text
-    def txt():
-        return f"Python version: {sys.version}"
-
-app = App(app_ui, server)
-</code></pre>
-</section>
-<section id="python" class="level1">
-<h1>python</h1>
-</section>
-<section id="misc" class="level1">
-<h1>Misc</h1>
-<pre class="shinylive-python" data-engine="python"><code>#| '!! shinylive warning !!': |
-#|   shinylive does not work in self-contained HTML documents.
-#|   Please set `embed-resources: false` in your metadata.
-#| standalone: true
-#| viewerHeight: 500
-
-from shiny import App, render, ui
-import numpy as np
-import matplotlib.pyplot as plt
-
-app_ui = ui.page_fluid(
-    ui.layout_sidebar(
-        ui.sidebar(
-            ui.input_slider("period", "Period", 0.5, 4, 1, step=0.5),
-            ui.input_slider("amplitude", "Amplitude", 0, 2, 1, step=0.25),
-            ui.input_slider("shift", "Phase shift", 0, 2, 0, step=0.1),
-        ),
-        ui.output_plot("plot"),
-    ),
-)
+<iframe src="./html/o3.html" frameborder="0" style="overflow:hidden; height:250vh; width:95%; border:2px solid #ccc;" height="250vh" width="100%" name="o2">
+</iframe>
 
 
-def server(input, output, session):
-    @output
-    @render.plot(alt="Sine wave")
-    def plot():
-        t = np.arange(0.0, 4.0, 0.01)
-        s = input.amplitude() * np.sin(
-            2 * np.pi / input.period() * (t - input.shift() / 2)
-        )
-        fig, ax = plt.subplots()
-        ax.set_ylim([-2, 2])
-        ax.plot(t, s)
-        ax.grid()
-
-
-app = App(app_ui, server)
-</code></pre>
 
 
 </section>

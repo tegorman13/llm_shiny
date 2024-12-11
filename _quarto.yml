@@ -10,7 +10,7 @@ project:
 website:  
   # repo-url: https://github.com/coatless-quarto/r-shinylive-demo
   # repo-actions: [edit, issue]
-  title: "r-shinylive in Quarto"
+  title: "AI task demos"
   navbar:
     search: false
     left:
@@ -20,6 +20,8 @@ website:
         file: sl_python.qmd
       - text: "ojs"
         file: ojs.qmd
+      - text: "Rep Study Followup"
+        file: rep_followup.qmd
 
 format:
   html:
