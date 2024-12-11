@@ -11,6 +11,35 @@ format:
       margin-width: 100px
 ---
 
+**Conditions:**
+
+*   **Condition 1: Information Search Assistance:** Participants receive AI support during the information search phase but not during plan formation.
+*   **Condition 2: Plan Formation Assistance:** Participants receive AI support during plan formation but not during information search.
+*   **Condition 3: Choice of Assistance:** Participants can choose to use the AI for either information search, plan formation, both, or neither. The level of uncertainty in each stage will be manipulated (e.g., by varying the number of information options or the difficulty of the reduction goal).
+*   **Condition 4: No AI Assistance (Control):** Participants receive no AI support during either stage.
+
+**Manipulations**
+
+- Reliability of AI
+    - AI is poor at information search, poor at plan creation, or poor at both. 
+- Plan Formation Reliability:
+- Uncertainty in the task
+    - Search uncertainty: number of options
+        - small option set, easy to interpret
+        - large option set, difficult to interpret
+    - Plan uncertainty: difficulty of the reduction goal
+        - Constraints on which/how much utility parameters can be adjusted
+            - e.g., "heating cannot decrease by more than 5%"
+        - Degree of precision required in the reduction goal
+            - e.g., exactly 10% vs. at least 10%
+- AI assigned to task vs. user chooses 
+
+
+    
+
+
+<br> <br>
+
 # Task Alt 1
 
 ```{=html}
